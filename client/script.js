@@ -20,7 +20,8 @@ async function populateMacros() {
   });
 }
 
-//  This function fetches all dining halls and then populates the neraby restaurants on the home page
+//  This function fetches all dining halls and then populates the neraby
+// restaurants on the home page
 async function populateRestaurants() {
   const diningRequest = await fetch('/api/dining');
   const diningData = await diningRequest.json();
@@ -84,11 +85,10 @@ async function dataFilter(mapFromMapFunction) {
     // eslint-disable-next-line max-len
     // make sure each returned restaurant _can_ be plotted on the map by checking for the value we need
     const filtered = data.filter(
-      (record) =>
-        (record.meal_name.toUpperCase().includes(search.value.toUpperCase()) &&
-          record.hall_lat) ||
-        (record.hall_name.toUpperCase().includes(search.value.toUpperCase()) &&
-          record.hall_lat)
+      (record) => (record.meal_name.toUpperCase().includes(search.value.toUpperCase())
+          && record.hall_lat)
+        || (record.hall_name.toUpperCase().includes(search.value.toUpperCase())
+          && record.hall_lat)
     );
     const topFive = filtered.slice(0, 5);
 
