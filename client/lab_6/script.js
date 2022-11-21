@@ -11,14 +11,27 @@
     https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/random
 */
 
-function getRandomIntInclusive(min, max){
-min = Math.ceil(min);
-max= Math.floor(max);
-return Math.floor(Math.random() * (max - min +1) + min);
+function getRandomIntInclusive(min, max) {
+  // eslint-disable-next-line no-param-reassign
+  min = Math.ceil(min);
+  // eslint-disable-next-line no-param-reassign
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min +1) + min);
 }
 
 function injectHTML(list) {
   console.log('fired injectHTML');
+  const target = document.querySelector('#restaurant_list');
+  target.innerHTML= '';
+
+  const listEl = document.createElement('ol');
+  target.appendChild(listEl);
+  list.forEach((item) => {
+    const el = document.createElement('li');
+    el.innerText = item.name;
+    listEl.appendChild(el);
+  });
+
   /*
   ## JS and HTML Injection
     There are a bunch of methods to inject text or HTML into a document using JS
