@@ -301,17 +301,8 @@
   
   /* How To Write A Media Query For Small Screens */
   
-  @media only screen and (max-width: 736px){
-      /* Rules in here will only apply when a screen is the correct size */
-      /* check it out by using your developer tools to shrink your screen-size */
-      .container {
-        background-color: rgba(16, 184, 226, 0.65);
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      }
-  }
-/* MAP STYLES */
+
+  /* MAP STYLES */
   #map {
     display: block;
     width: 400px;
@@ -319,7 +310,6 @@
     border: 2px dashed rgb(99,99,99);
     margin-bottom: 1rem;
   }
-
 /* 
     New code bonus: pure CSS data loading icon
     This comes from loading.io/css - it's nice to show that something is happening!
@@ -382,5 +372,16 @@
     }
     100% {
       transform: translate(24px, 0);
+    }
+  }
+
+  @media only screen and (max-width: 736px){
+    /* Rules in here will only apply when a screen is the correct size */
+    /* check it out by using your developer tools to shrink your screen-size */
+    .container {
+      background-color: rgba(16, 184, 226, 0.65);
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     }
   }

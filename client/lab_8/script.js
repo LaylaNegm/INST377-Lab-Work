@@ -40,7 +40,7 @@ function injectHTML(list) {
       the usual ones are element.innerText and element.innerHTML
       Here's an article on the differences if you want to know more:
       https://developer.mozilla.org/en-US/docs/Web/API/Node/textContent#differences_from_innertext
-  
+
     ## What to do in this function
       - Accept a list of restaurant objects
       - using a .forEach method, inject a list element into your index.html for every element in the list
@@ -64,12 +64,12 @@ function processRestaurants(list) {
         then select 15 random records
         and return an object containing only the restaurant's name, category, and geocoded location
         So we can inject them using the HTML injection function
-  
+
         You can find the column names by carefully looking at your single returned record
         https://data.princegeorgescountymd.gov/Health/Food-Inspection/umjn-t2iz
-  
+
       ## What to do in this function:
-  
+
       - Create an array of 15 empty elements (there are a lot of fun ways to do this, and also very basic ways)
       - using a .map function on that range,
       - Make a list of 15 random restaurants from your list of 100 from your data request
@@ -87,6 +87,32 @@ function filterList(array, filterInputValue) {
   });
 }
 
+function initMap() {
+  console.log('initMap');
+  const map = L.map('map').setView([38.7849, -76.8721], 13);
+  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+  }).addTo(map);
+  return map;
+}
+
+function markerPlace(array, map) {
+  map.eachLayer((layer) => {
+    if (layer instanceof L.Marker) {
+      layer.remove();
+    }
+  });
+
+  array.forEach((item, index) => {
+    const {coordinates} = item.geocoded_column_1;
+    L.marker([coordinates[1], coordinates[0]]).addTo(map);
+    if (index === 0) {
+      map.setView([coordinates[1], coordinates[0]], 10);
+    }
+  });
+}
+
 async function mainEvent() {
   /*
       ## Main Event
@@ -94,7 +120,7 @@ async function mainEvent() {
         When you're not working in a heavily-commented "learning" file, this also is more legible
         If you separate your work, when one piece is complete, you can save it and trust it
     */
-
+  const pageMap = initMap();
   // the async keyword means we can make API requests
   const form = document.querySelector('.main_form'); // get your main form so you can do JS with it
   const submit = document.querySelector('#get-resto'); // get a reference to your submit button
@@ -131,7 +157,7 @@ async function mainEvent() {
 
   let currentList = [];
 
-  submit.style.display = 'block'; 
+  submit.style.display = 'block';
 
   // let's hide our load button now that we have some data to manipulate
   loadAnimation.classList.remove('lds-ellipsis');
@@ -139,8 +165,9 @@ async function mainEvent() {
 
   form.addEventListener('input', (event) => {
     console.log('input', event.target.value);
-    const newList = filterList(currentList, event.target.value);
-    injectHTML(newList);
+    const filteredList = filterList(currentList, event.target.value);
+    injectHTML(filteredList);
+    markerPlace(filteredList, pageMap);
   });
 
   // And here's an eventListener! It's listening for a "submit" button specifically being clicked
@@ -155,6 +182,7 @@ async function mainEvent() {
 
     // And this function call will perform the "side effect" of injecting the HTML list for you
     injectHTML(currentList);
+    markerPlace(currentList, pageMap);
 
     // By separating the functions, we open the possibility of regenerating the list
     // without having to retrieve fresh data every time
