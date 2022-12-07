@@ -112,6 +112,14 @@ function markerPlace(array, map) {
     }
   });
 }
+async function getData() {
+  // const url = 'https://data.princegeorgescountymd.gov/resource/bzf2-94qx.json';
+  const url2 = 'https://data.princegeorgescountymd.gov/resource/umjn-t2iz.json';
+  const data = await fetch(url2);
+  const json = await data.json();
+  const reply = json.filter((item) => Boolean(item.geocoded_column_1)).filter((item) => Boolean(item.name));
+  return reply;
+}
 
 async function mainEvent() {
   /*
@@ -121,6 +129,7 @@ async function mainEvent() {
         If you separate your work, when one piece is complete, you can save it and trust it
     */
   const pageMap = initMap();
+  const mapData = await getData();
   // the async keyword means we can make API requests
   const form = document.querySelector('.main_form'); // get your main form so you can do JS with it
   const submit = document.querySelector('#get-resto'); // get a reference to your submit button
@@ -132,8 +141,8 @@ async function mainEvent() {
       This next line goes to the request for 'GET' in the file at /server/routes/foodServiceRoutes.js
       It's at about line 27 - go have a look and see what we're retrieving and sending back.
      */
-  const results = await fetch('/api/foodServicePG');
-  const arrayFromJson = await results.json(); // here is where we get the data from our request as JSON
+  
+  // here is where we get the data from our request as JSON
 
   /*
       Below this comment, we log out a table of all the results using "dot notation"
@@ -141,19 +150,9 @@ async function mainEvent() {
       Dot notation is preferred in JS unless you have a good reason to use brackets
       The 'data' key, which we set at line 38 in foodServiceRoutes.js, contains all 1,000 records we need
     */
-  console.table(arrayFromJson.data);
-
-  // in your browser console, try expanding this object to see what fields are available to work with
-  // for example: arrayFromJson.data[0].name, etc
-  console.log(arrayFromJson.data[0]);
-
-  // this is called "string interpolation" and is how we build large text blocks with variables
-  console.log(
-    `${arrayFromJson.data[0].name} ${arrayFromJson.data[0].category}`
-  );
-
+  
   // This IF statement ensures we can't do anything if we don't have information yet
-  if (!arrayFromJson.data?.length) { return; }
+  if (!mapData?.length) { return; }
 
   let currentList = [];
 
@@ -177,7 +176,7 @@ async function mainEvent() {
     submitEvent.preventDefault();
 
     // This constant will have the value of your 15-restaurant collection when it processes
-    currentList = processRestaurants(arrayFromJson.data);
+    currentList = processRestaurants(mapData);
     // console.log(currentList);
 
     // And this function call will perform the "side effect" of injecting the HTML list for you
